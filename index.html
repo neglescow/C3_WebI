@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>C3-WebI</title>
+</head>
+
+<body>
+    <h1>C3-WebI Gráfico Socket.io</h1>
+    <div style="width: 800px">
+        <canvas id="myChart"></canvas>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        const socket = io()
+        let num = []
+        let nome = []
+        let cor = []
+        socket.on('#data', (data) => {
+            num.push(data)
+            nome.push(gerarNome())
+            cor.push(randomColor())
+            myChart.update()
+        })  
+    </script>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d')
+
+        let vetAluno = ['dian', 'carlos', 'bruna', 'caio', 'joão', 'carlos', 'vinicios', 'alair', 'ana', 'maria', 'saulo', 'otavio']
+        let vetsobre = ['junior', 'santos', 'castro', 'pires', 'alacast', 'coelho', 'gomes', 'alcantara', 'oliveira', 'cabral', 'bortolozzo', 'bolonhesa']
+
+        gerarNome = () => {
+            let aux = 0, aux2 = 0
+            let nom
+            aux = Math.floor(Math.random() * vetAluno.length)
+            aux2 = Math.floor(Math.random() * vetsobre.length)
+            nom = vetAluno[aux] + " " + vetsobre[aux2]
+            return nom
+        }
+        randomColor = () => {
+            var letters = '0123456789ABCDEF'
+            var color = '#'
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)]
+            }
+            return color
+        }
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: nome,
+                datasets: [{
+                    backgroundColor: cor,
+                    data: num
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Media dos alunos',
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
